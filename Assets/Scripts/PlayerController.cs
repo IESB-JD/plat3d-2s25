@@ -2,43 +2,64 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 8f;
-    public float rotationSpeed = 80f;
-    public Rigidbody rb;
+    public CharacterController cc;
+    public float speed = 5f;
+    public float speedRunning = 15f;
+    public float currentSpeed = 0f;
     
-    private float _moveX;
-    private float _moveZ;
+    public float jumpHeight = 2f;
+    public float gravity = -9.81f;
+    public float groundDistance = 0.4f;
     
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+    public Vector3 verticalVelocity;
+    public bool isGrounded;
+    
+    public Transform groundCheck;
+    public LayerMask groundMask;
 
     private void Update()
     {
-        _moveX = Input.GetAxis("Horizontal");
-        _moveZ = Input.GetAxis("Vertical");
+        DetectGround();
+        MoveCharacter();
+        ApplyGravity();
     }
     
-    private void FixedUpdate()
+    private void DetectGround()
     {
-        Vector3 move = transform.forward * _moveZ * moveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(rb.position + move);
-        Quaternion turn = Quaternion.Euler(0f, _moveX * rotationSpeed * Time.fixedDeltaTime, 0f);
-        rb.MoveRotation(rb.rotation * turn);
-    }
-    
-    public void OnTriggerEnter(Collider other)
-    {
-        var interactable = other.GetComponent<IInteractable>();
-        if (interactable != null)
+        isGrounded = Physics.CheckSphere(groundCheck.position,
+            groundDistance,
+            groundMask);
+        
+        if (isGrounded && verticalVelocity.y < 0)
         {
-            interactable.Interact();
+            verticalVelocity.y = -2f;
         }
     }
-
-    private interface IInteractable
+    
+    private void MoveCharacter()
     {
-        public void Interact();
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        Vector3 moveDirection = (transform.right * x + transform.forward * z).normalized;
+        
+        currentSpeed = speed;
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            currentSpeed = speedRunning;
+        }
+        
+        cc.Move(moveDirection * currentSpeed * Time.deltaTime);
+        
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            verticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+    }
+    
+    private void ApplyGravity()
+    {
+        verticalVelocity.y += gravity * Time.deltaTime;
+        cc.Move(verticalVelocity * Time.deltaTime);
     }
 }

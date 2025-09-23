@@ -1,53 +1,97 @@
+
+using System;
 using UnityEngine;
 
 public class OrbitalCamera : MonoBehaviour
 {
+    [Header("Target")]
     public Transform target;
-    public float distance = 10.0f;
-    public float xSpeed = 120.0f;
-    public float ySpeed = 120.0f;
-
-    private float _yMinLimit = -20f;
-    private float _yMaxLimit = 80f;
-
-    private float _x = 0.0f;
-    private float _y = 0.0f;
+    
+    [Header("Distance"), Tooltip("Current distance the camera is from the target")]
+    public float distance = 15.0f;
+    [Tooltip("Minimum distance the camera can be from the target")]
+    public float minDistance = 5.0f;
+    [Tooltip("Maximum distance the camera can be from the target")]
+    public float maxDistance = 25.0f; 
+    
+    [Header("Rotation")]
+    public float rotationSpeed = 2.0f;
+    public float verticalSpeed = 2.0f;
+    
+    [Header("Vertical Limits")]
+    public float minVerticalAngle = 20.0f;
+    public float maxVerticalAngle = 80.0f;
+    
+    [Header("Zoom")]
+    public float zoomSpeed = 2.0f;
+    
+    private float currentX = 0.0f;
+    private float currentY = 0.0f;
+    private float currentDistance;
+    private Vector3 velocity = Vector3.zero;
+    
+    private Camera cam;
 
     void Start()
     {
+        cam = GetComponent<Camera>();
+        
+        if (target == null)
+        {
+            Debug.LogError("OrbitalCamera: No target assigned.");
+            enabled = false;
+            return;
+        }
+        
+        currentDistance = distance;
         Vector3 angles = transform.eulerAngles;
-        _x = angles.y;
-        _y = angles.x;
+        currentX = angles.y;
+        currentY = angles.x;
 
-        if (GetComponent<Rigidbody>())
+        UpdateCameraPosition();
+    }
+
+    private void UpdateCameraPosition()
+    {
+        Quaternion rotation = Quaternion.Euler(currentY, currentX, 0.0f);
+        Vector3 direction = rotation * Vector3.forward;
+        Vector3 targetPosition = target.position - direction * currentDistance;
+        transform.position = targetPosition;
+        transform.LookAt(target.position);
+    }
+
+    private void LateUpdate()
+    {
+        if (target == null)
         {
-            GetComponent<Rigidbody>().freezeRotation = true;
+            Debug.LogError("OrbitalCamera: No target assigned.");
+            enabled = false;
+            return;
+        }
+
+        HandleInput();
+        UpdateCameraPosition();
+    }
+
+    private void HandleInput()
+    {
+        // Rotation
+        if (Input.GetMouseButton(1)) 
+        {
+            currentX += Input.GetAxis("Mouse X") * rotationSpeed;
+            currentY -= Input.GetAxis("Mouse Y") * verticalSpeed;
+            // Clamp vertical angle (clamp == limit a value to a range min and max)
+            currentY = Mathf.Clamp(currentY, minVerticalAngle, maxVerticalAngle);
+        }
+
+        // Zoom
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        //Abs = absolute value
+        if (Mathf.Abs(scroll) > 0.01f)
+        {
+            currentDistance -= scroll * zoomSpeed;
+            currentDistance = Mathf.Clamp(currentDistance, minDistance, maxDistance);
         }
     }
-
-    void LateUpdate()
-    {
-        if (target)
-        {
-            _x += Input.GetAxis("Mouse X") * xSpeed * distance * 0.02f;
-            _y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
-
-            _y = ClampAngle(_y, _yMinLimit, _yMaxLimit);
-
-            Quaternion rotation = Quaternion.Euler(_y, _x, 0);
-            Vector3 position = rotation * new Vector3(0.0f, 0.0f, -distance) + target.position;
-
-            transform.rotation = rotation;
-            transform.position = position;
-        }
-    }
-
-    private static float ClampAngle(float angle, float min, float max)
-    {
-        if (angle < -360F)
-            angle += 360F;
-        if (angle > 360F)
-            angle -= 360F;
-        return Mathf.Clamp(angle, min, max);
-    }
+    
 }

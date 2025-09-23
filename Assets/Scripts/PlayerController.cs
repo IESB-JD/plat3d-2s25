@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     public float gravity = -9.81f;
     public float groundDistance = 0.4f;
     
+    public float rotationSpeed = 100f;
+    
     public Vector3 verticalVelocity;
     public bool isGrounded;
     
@@ -38,10 +40,11 @@ public class PlayerController : MonoBehaviour
     
     private void MoveCharacter()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        Vector3 moveDirection = (transform.right * x + transform.forward * z).normalized;
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+        
+        transform.Rotate(0, horizontal * rotationSpeed * Time.deltaTime, 0);
+        Vector3 moveDirection = transform.forward * vertical;
         
         currentSpeed = speed;
         if (Input.GetKey(KeyCode.LeftShift))

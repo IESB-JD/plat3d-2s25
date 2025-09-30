@@ -1,35 +1,31 @@
-using System;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class Enemy
+    public class Enemy : MonoBehaviour
     { 
-        public string Name;
-        private int Health;
-        public int HealthPublic;
-        
-        public float GetHealth()
-        {
-            return Health;
-        }
-        
-        public void SetHealth(int health)
-        {
-            Health = health;
-            Debug.Log(Name + " health set to: " + health);
-        }
-    }
+        private int Health = 10;
 
-    public class EnemyController
-    {
-        private Enemy Orc;
-
-        public void Blah()
+        private void Update()
         {
-            Orc.HealthPublic = 9999999;
-            Orc.SetHealth(200);
-            Debug.Log(Orc.GetHealth());
+            if(Input.GetKeyDown(KeyCode.K))
+            {
+                TakeDamage(10);
+            }
+        }
+
+        private void TakeDamage(int dmg)
+        {
+            Health -= dmg;
+            if (Health <= 0)
+            {
+                Die();
+            }
+        }
+
+        private void Die()
+        {
+            Destroy(gameObject);
         }
     }
 }

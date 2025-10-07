@@ -9147,7 +9147,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &196111060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9161,12 +9161,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 7253576769315834828, guid: bdb59539f7d5a42fea54f750494adbbb, type: 3}
-  initialCount: 1
   maxAlive: 5
-  targetAlive: 3
   spawnCooldown: 2
   spawnRadius: 7
-  spawnedEnemies: []
 --- !u!65 &196111061
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -40475,12 +40472,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 7253576769315834828, guid: bdb59539f7d5a42fea54f750494adbbb, type: 3}
-  initialCount: 1
   maxAlive: 5
-  targetAlive: 3
   spawnCooldown: 2
-  spawnRadius: 7
-  spawnedEnemies: []
+  spawnRadius: 8
 --- !u!65 &828381222
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -40560,7 +40554,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828381220}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 26.83, y: 0.293, z: -21.42}
+  m_LocalPosition: {x: 24.36, y: 0.293, z: -21.15}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -51142,7 +51136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1063186044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51156,12 +51150,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 7253576769315834828, guid: bdb59539f7d5a42fea54f750494adbbb, type: 3}
-  initialCount: 1
   maxAlive: 5
-  targetAlive: 3
   spawnCooldown: 2
   spawnRadius: 7
-  spawnedEnemies: []
 --- !u!65 &1063186045
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -1,31 +1,37 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
     public class Enemy : MonoBehaviour
     { 
-        private int Health = 10;
-
-        private void Update()
+        List<Enemy> enemies = new List<Enemy>();
+        
+        public static event Action<Enemy, bool> onDeath;
+        public float health = 10f;
+        private PlayerController player;
+        
+        private void Start()
         {
-            if(Input.GetKeyDown(KeyCode.K))
-            {
-                TakeDamage(10);
-            }
+            onDeath += OnDeathHandler;
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         }
 
-        private void TakeDamage(int dmg)
+        private void OnDeathHandler(Enemy obj, bool isBoss)
         {
-            Health -= dmg;
-            if (Health <= 0)
-            {
-                Die();
-            }
+            
         }
 
-        private void Die()
+        public void TakeDamage(float damage)
         {
-            Destroy(gameObject);
+            health -= damage;
+            if (health <= 0f)
+            {
+                Destroy(gameObject);
+                player.AddScore();
+                onDeath?.Invoke(this, false);
+            }
         }
     }
 }

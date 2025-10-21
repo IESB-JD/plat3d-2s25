@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace IESB.Plat3D.Controllers
 {
@@ -11,15 +13,36 @@ namespace IESB.Plat3D.Controllers
         public float spawnRadius = 5;
 
         private int _currentAmount = 0;
+        
+        public bool canSpawn = true;
+        
+        
 
         private void Start()
         {
             StartCoroutine(SpawnEnemy());
+            
+        }
+
+        private void OnEnable()
+        {
+            PlayerController.OnPlayerDied += OnPlayerDied;
+        }
+
+        private void OnDisable()
+        {
+            PlayerController.OnPlayerDied -= OnPlayerDied;
+        }
+
+        private void OnPlayerDied()
+        {
+            Debug.Log($"Player morreu, parando de criar inimigos");
+            canSpawn = false;
         }
         
         private IEnumerator SpawnEnemy()
         {
-            while (true)
+            while (canSpawn)
             {
                 yield return new WaitForSeconds(spawnCooldown);
                 if (_currentAmount < maxAlive)

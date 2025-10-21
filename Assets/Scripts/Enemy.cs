@@ -6,16 +6,11 @@ namespace DefaultNamespace
 {
     public class Enemy : MonoBehaviour
     { 
-        List<Enemy> enemies = new List<Enemy>();
-        
-        public static event Action<Enemy, bool> onDeath;
         public float health = 10f;
-        private PlayerController player;
         
         private void Start()
         {
-            onDeath += OnDeathHandler;
-            player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            //PlayerController.OnDie += 
         }
 
         private void OnDeathHandler(Enemy obj, bool isBoss)
@@ -29,8 +24,6 @@ namespace DefaultNamespace
             if (health <= 0f)
             {
                 Destroy(gameObject);
-                player.AddScore();
-                onDeath?.Invoke(this, false);
             }
         }
     }

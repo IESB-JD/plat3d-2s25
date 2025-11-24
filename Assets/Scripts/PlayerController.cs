@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class PlayerController : MonoBehaviour
     public static event Action<int> OnCristalCollected;
     public static event Action<float> OnHpChanged;
 
+    #region Damage
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
@@ -61,7 +63,9 @@ public class PlayerController : MonoBehaviour
             Teleport();
         }
     }
+    #endregion
 
+    
     private void Collect(Collider other)
     {
         other.gameObject.SetActive(false);
